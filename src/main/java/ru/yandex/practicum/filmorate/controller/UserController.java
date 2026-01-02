@@ -33,8 +33,10 @@ public class UserController {
         validateDataUser(user);
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
+            return user;
+        } else {
+            throw new ValidationException("ID пользователя не найден!");
         }
-        return user;
     }
 
     @GetMapping

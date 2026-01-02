@@ -33,8 +33,10 @@ public class FilmController {
         validateDataFilm(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
+            return film;
+        } else {
+            throw new ValidationException("ID фильма не найден!");
         }
-        return film;
     }
 
     @GetMapping
@@ -53,6 +55,10 @@ public class FilmController {
     }
 
     private void validateDataFilm(Film film) {
+        if (film.getName() == null || film.getName().isBlank()) {
+            throw new ValidationException("Название фильма не может быть пустым!");
+        }
+
         if (film.getDescription() == null || film.getDescription().isBlank()) {
             throw new ValidationException("Описание не может быть пустым!");
         }

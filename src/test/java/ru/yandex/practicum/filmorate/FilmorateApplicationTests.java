@@ -153,13 +153,11 @@ class FilmorateApplicationTests {
 		initialFilm.setDuration(150);
 		filmController.filmAdd(initialFilm);
 
-		// Try to update with non-existing ID
-		filmController.filmUpdate(film);
-
-		// The non-existing film should not be added
-		assertEquals(1, filmController.showFilms().size());
-		assertTrue(filmController.showFilms().stream()
-				.noneMatch(f -> f.getId() == 999L));
+		ValidationException exception = assertThrows(
+				ValidationException.class,
+				() -> filmController.filmUpdate(film)
+		);
+		assertEquals("ID фильма не найден!", exception.getMessage());
 	}
 
 	@Test
@@ -340,11 +338,11 @@ class FilmorateApplicationTests {
 		user.setName("Valid Name");
 		user.setBirthday(LocalDate.of(1990, 1, 1));
 
-		User result = userController.updateUser(user);
-
-		assertNotNull(result);
-		assertEquals(999L, result.getId());
-		assertEquals(0, userController.showUsers().size());
+		ValidationException exception = assertThrows(
+				ValidationException.class,
+				() -> userController.updateUser(user)
+		);
+		assertEquals("ID пользователя не найден!", exception.getMessage());
 	}
 
 	@Test
