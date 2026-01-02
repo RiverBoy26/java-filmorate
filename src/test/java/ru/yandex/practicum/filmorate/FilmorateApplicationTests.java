@@ -13,7 +13,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FilmorateApplicationTest {
+class FilmorateApplicationTests {
 	private FilmController filmController;
 	private UserController userController;
 
