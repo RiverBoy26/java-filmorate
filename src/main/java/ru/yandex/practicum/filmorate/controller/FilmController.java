@@ -19,7 +19,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
-    @PostMapping("/{id}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Film filmAdd(@RequestBody @Valid Film film) {
         validateDataFilm(film);
@@ -28,7 +28,7 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public Film filmUpdate(@RequestBody @NotNull @Valid Film film) {
         validateDataFilm(film);
         if (films.containsKey(film.getId())) {

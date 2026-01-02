@@ -19,7 +19,7 @@ import java.util.Map;
 public class UserController {
     private final Map<Long, User> users = new HashMap<>();
 
-    @PostMapping("/{id}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody @Valid User user) {
         validateDataUser(user);
@@ -28,7 +28,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public User updateUser(@RequestBody @NotNull @Valid User user) {
         validateDataUser(user);
         if (users.containsKey(user.getId())) {
