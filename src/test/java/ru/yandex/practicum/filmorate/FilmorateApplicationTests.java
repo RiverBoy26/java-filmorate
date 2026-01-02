@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +28,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 1");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		film.setDuration(150);
 
 		Film result = filmController.filmAdd(film);
 
@@ -43,7 +42,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 2");
 		film.setDescription("");
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(1, 30)));
+		film.setDuration(90);
 
 		ValidationException exception = assertThrows(
 				ValidationException.class,
@@ -58,7 +57,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 3");
 		film.setDescription(null);
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		film.setDuration(90);
 
 		ValidationException exception = assertThrows(
 				ValidationException.class,
@@ -74,7 +73,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 4");
 		film.setDescription(description);
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(1, 30)));
+		film.setDuration(90);
 
 		assertDoesNotThrow(() -> filmController.filmAdd(film));
 	}
@@ -86,7 +85,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 5");
 		film.setDescription(description);
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(1, 30)));
+		film.setDuration(90);
 
 		ValidationException exception = assertThrows(
 				ValidationException.class,
@@ -101,7 +100,7 @@ class FilmorateApplicationTests {
 		film.setName("Film old");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(1895, 12, 27));
-		film.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		film.setDuration(150);
 
 		ValidationException exception = assertThrows(
 				ValidationException.class,
@@ -116,35 +115,24 @@ class FilmorateApplicationTests {
 		film.setName("Film first");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(1895, 12, 28));
-		film.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		film.setDuration(150);
 
 		assertDoesNotThrow(() -> filmController.filmAdd(film));
 	}
 
 	@Test
-	void addFilm_withInvalidDurationFormat_shouldThrowException() {
+	void addFilm_withInvalidDuration_shouldThrowException() {
 		Film film = new Film();
 		film.setName("Film");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration("invalid");
+		film.setDuration(-1);
 
 		ValidationException exception = assertThrows(
 				ValidationException.class,
 				() -> filmController.filmAdd(film)
 		);
-		assertEquals("Некорректный ввод продолжительности (HH:mm)", exception.getMessage());
-	}
-
-	@Test
-	void addFilm_withValidDurationFormat_shouldSucceed() {
-		Film film = new Film();
-		film.setName("Film 1");
-		film.setDescription("Описание");
-		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration("02:30");
-
-		assertDoesNotThrow(() -> filmController.filmAdd(film));
+		assertEquals("Продолжительность должна быть положительной!", exception.getMessage());
 	}
 
 	@Test
@@ -154,7 +142,7 @@ class FilmorateApplicationTests {
 		film.setName("Film 1");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		film.setDuration(150);
 
 		// First add a film with ID 1
 		Film initialFilm = new Film();
@@ -162,7 +150,7 @@ class FilmorateApplicationTests {
 		initialFilm.setName("Film 1");
 		initialFilm.setDescription("Описание");
 		initialFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
-		initialFilm.setDuration(String.valueOf(LocalTime.of(2, 30)));
+		initialFilm.setDuration(150);
 		filmController.filmAdd(initialFilm);
 
 		// Try to update with non-existing ID
@@ -370,25 +358,19 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	void addFilm_withZeroDuration_shouldSucceed() {
+	void addFilm_withZeroDuration_shouldThrowException() {
 		Film film = new Film();
 		film.setName("Film");
 		film.setDescription("Описание");
 		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration("00:00");
+		film.setDuration(0);
 
-		assertDoesNotThrow(() -> filmController.filmAdd(film));
-	}
+		ValidationException exception = assertThrows(
+				ValidationException.class,
+				() -> filmController.filmAdd(film)
+		);
 
-	@Test
-	void addFilm_withMaxTimeDuration_shouldSucceed() {
-		Film film = new Film();
-		film.setName("Film");
-		film.setDescription("Описание");
-		film.setReleaseDate(LocalDate.of(2000, 1, 1));
-		film.setDuration("23:59");
-
-		assertDoesNotThrow(() -> filmController.filmAdd(film));
+		assertEquals("Продолжительность должна быть положительной!", exception.getMessage());
 	}
 
 	@Test
