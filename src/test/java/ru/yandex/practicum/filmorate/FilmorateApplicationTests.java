@@ -13,7 +13,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FilmControllerTest {
+class FilmorateApplicationTest {
 	private FilmController filmController;
 	private UserController userController;
 
@@ -22,8 +22,6 @@ class FilmControllerTest {
 		filmController = new FilmController();
 		userController = new UserController();
 	}
-
-	// ========== Film Validation Tests ==========
 
 	@Test
 	void addFilm_withValidData_shouldReturnFilm() {
@@ -371,7 +369,6 @@ class FilmControllerTest {
 		assertTrue(userController.showUsers().isEmpty());
 	}
 
-	// Граничные условия для продолжительности фильма
 	@Test
 	void addFilm_withZeroDuration_shouldSucceed() {
 		Film film = new Film();
