@@ -4,15 +4,14 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-/**
- * Film.
- */
+
 @Data
 @Slf4j
-public class Film {
+public class User {
     private long id;
+    private String email;
+    private String login;
     private String name;
-    private String description;
-    private LocalDate releaseDate;
-    private String duration;
+    private LocalDate birthday;
+
 }
