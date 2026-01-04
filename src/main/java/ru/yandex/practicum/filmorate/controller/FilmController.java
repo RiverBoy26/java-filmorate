@@ -20,7 +20,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
-    private final int MAX_DESCRIPTION_LENGTH = 200;
+    private final int LENGTH = 200;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -66,7 +66,7 @@ public class FilmController {
             throw new ValidationException("Описание не может быть пустым!");
         }
 
-        if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
+        if (film.getDescription().length() > LENGTH) {
             throw new ValidationException("Описание превысило 200 символов!");
         }
 
