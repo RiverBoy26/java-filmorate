@@ -20,7 +20,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
-    private final int LENGTH = 200;
+    private static final int DESCRIPTION_MAX_LENGTH = 200;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
