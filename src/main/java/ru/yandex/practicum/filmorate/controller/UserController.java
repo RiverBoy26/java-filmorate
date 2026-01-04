@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -16,12 +17,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 @Slf4j
+@Validated
 public class UserController {
     private final Map<Long, User> users = new HashMap<>();
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User addUser(@RequestBody @Valid User user) {
+    public User addUser(@RequestBody User user) {
         validateDataUser(user);
         user.setId(newUserId());
         users.put(user.getId(), user);
@@ -29,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody @NotNull @Valid User user) {
+    public User updateUser(@RequestBody @NotNull User user) {
         validateDataUser(user);
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);

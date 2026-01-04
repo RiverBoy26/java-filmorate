@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,12 +17,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/films")
 @Slf4j
+@Validated
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
+    private final int MAX_DESCRIPTION_LENGTH = 200;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Film filmAdd(@RequestBody @Valid Film film) {
+    public Film filmAdd(@RequestBody Film film) {
         validateDataFilm(film);
         film.setId(newFilmId());
         films.put(film.getId(), film);
@@ -29,7 +33,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film filmUpdate(@RequestBody @NotNull @Valid Film film) {
+    public Film filmUpdate(@RequestBody @NotNull Film film) {
         validateDataFilm(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
@@ -63,7 +67,7 @@ public class FilmController {
             throw new ValidationException("Описание не может быть пустым!");
         }
 
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
             throw new ValidationException("Описание превысило 200 символов!");
         }
 
