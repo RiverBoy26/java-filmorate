@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
@@ -15,12 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class FilmorateApplicationTests {
 	private FilmController filmController;
 	private UserController userController;
-
-	@BeforeEach
-	void setUp() {
-		filmController = new FilmController();
-		userController = new UserController();
-	}
 
 	@Test
 	void addFilm_withValidData_shouldReturnFilm() {
