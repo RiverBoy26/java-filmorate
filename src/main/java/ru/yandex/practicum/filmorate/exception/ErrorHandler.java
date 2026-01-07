@@ -51,6 +51,7 @@ public class ErrorHandler {
     public Map handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         String errorMessage = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
         log.warn("Ошибка валидации аргументов: {}", errorMessage);
+        assert errorMessage != null;
         return Map.of("Ошибка валидации аргументов", errorMessage);
     }
 

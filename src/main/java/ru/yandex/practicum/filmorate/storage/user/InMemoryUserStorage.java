@@ -19,7 +19,9 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User addUser(User user) {
         validateDataUser(user);
-        user.setId(idCounter++);
+        if (user.getId() <= idCounter ) {
+            user.setId(idCounter++);
+        }
         users.put(user.getId(), user);
         return user;
     }
