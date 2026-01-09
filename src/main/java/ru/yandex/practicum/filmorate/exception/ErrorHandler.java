@@ -78,7 +78,7 @@ public class ErrorHandler {
         return Map.of("Некорректный формат JSON", "Проверьте правильность структуры запроса");
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map handleException(final Exception e) {
         log.error("Внутренняя ошибка сервера: {}", e.getMessage(), e);

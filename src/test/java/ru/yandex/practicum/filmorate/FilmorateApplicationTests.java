@@ -30,8 +30,8 @@ class FilmorateApplicationTests {
         FilmService filmService = new FilmService(filmStorage, userStorage);
         UserService userService = new UserService(userStorage);
 
-        filmController = new FilmController(filmService, filmStorage);
-        userController = new UserController(userService, userStorage);
+        filmController = new FilmController(filmService);
+        userController = new UserController(userService);
     }
 
     @Test

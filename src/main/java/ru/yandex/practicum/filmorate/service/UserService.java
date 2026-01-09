@@ -1,24 +1,22 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
 
     public void addFriend(long userId, long friendId) {
         User user1 = userStorage.getUser(userId)
@@ -36,6 +34,26 @@ public class UserService {
 
         user1.getFriends().add(friendId);
         user2.getFriends().add(userId);
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public Optional<User> getUser(long id) {
+        return userStorage.getUser(id);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public void removeUser(User user) {
+        userStorage.removeUser(user);
+    }
+
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
     }
 
     public void removeFriend(long userId, long friendId) {
