@@ -1,75 +1,72 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 @Validated
+@RequiredArgsConstructor
 public class UserController {
-    private final Map<Long, User> users = new HashMap<>();
+    private final UserService userService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User addUser(@RequestBody User user) {
-        validateDataUser(user);
-        user.setId(newUserId());
-        users.put(user.getId(), user);
-        return user;
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody @NotNull User user) {
-        validateDataUser(user);
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            return user;
-        } else {
-            throw new ValidationException("ID пользователя не найден!");
-        }
+        return userService.updateUser(user);
+    }
+
+    @DeleteMapping
+    public void deleteUser(User user) {
+        userService.removeUser(user);
     }
 
     @GetMapping
     public Collection<User> showUsers() {
-        return users.values();
+        return userService.getAllUsers();
     }
 
-    private long newUserId() {
-        long currentUserId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-
-        return ++currentUserId;
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable long id) {
+        return userService.getUser(id)
+                .orElseThrow(() -> new ru.yandex.practicum.filmorate.exception.NotFoundException(
+                        "Пользователь с ID " + id + " не найден"));
     }
 
-    private void validateDataUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            throw new ValidationException("Почта не может быть пустой и должна содержать @");
-        }
+    @PutMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.addFriend(id, friendId);
+    }
 
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы!");
-        }
+    @DeleteMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.removeFriend(id, friendId);
+    }
 
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Введите действительную дату рождения!");
-        }
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable long id) {
+        return userService.getUserFriends(id);
+    }
 
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 }
