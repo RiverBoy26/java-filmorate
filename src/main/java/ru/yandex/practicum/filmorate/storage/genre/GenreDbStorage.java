@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 @Qualifier("genreDbStorage")
-public class GenreDbStorage implements GenreStorage{
+public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Genre> genreRowMapper = (rs, rowNum) -> {
