@@ -17,10 +17,11 @@ public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Mpa> mpaRowMapper = (rs, rowNum) -> {
-        return Mpa.builder().
-                id(rs.getInt("id"))
+        return Mpa.builder()
+                        .id(rs.getInt("id"))
                 .name(rs.getString("name"))
-                .description(rs.getString("description")).build();
+                .description(rs.getString("description"))
+                .build();
     };
 
     @Override
