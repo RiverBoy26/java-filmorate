@@ -105,8 +105,7 @@ public class UserDbStorage implements UserStorage {
         jdbcTemplate.update(deleteSql, userId, friendId);
     }
 
-    @Override
-    public Set<Long> getFriendIds(long userId) {
+    public List<User> getFriendIds(long userId) {
         String checkSql = "SELECT COUNT(*) FROM users WHERE id = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, userId);
 
@@ -115,16 +114,24 @@ public class UserDbStorage implements UserStorage {
         }
 
         String sql = """
-            SELECT friend_id
-            FROM friends
-            WHERE user_id = ? AND status = true
-        """;
+        SELECT u.*
+        FROM users u
+        JOIN friends f ON u.id = f.friend_id
+        WHERE f.user_id = ? AND f.status = true
+    """;
 
-        return new HashSet<>(jdbcTemplate.query(
+        return jdbcTemplate.query(
                 sql,
-                (rs, rowNum) -> rs.getLong("friend_id"),
+                (rs, rowNum) -> User.builder()
+                        .id(rs.getLong("id"))
+                        .email(rs.getString("email"))
+                        .login(rs.getString("login"))
+                        .name(rs.getString("name"))
+                        .birthday(rs.getDate("birthday") != null ?
+                                rs.getDate("birthday").toLocalDate() : null)
+                        .build(),
                 userId
-        ));
+        );
     }
 
     @Override

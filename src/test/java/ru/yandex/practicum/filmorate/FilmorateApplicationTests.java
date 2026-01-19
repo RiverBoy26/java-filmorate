@@ -242,11 +242,11 @@ class FilmorateApplicationTests {
         userStorage.updateFriendStatus(savedUser1.getId(), savedUser3.getId(), true);
 
         // When
-        Set<Long> friendIds = userStorage.getFriendIds(savedUser1.getId());
+        List<User> friendIds = userStorage.getFriendIds(savedUser1.getId());
 
         // Then
         assertThat(friendIds).hasSize(2);
-        assertThat(friendIds).contains(savedUser2.getId(), savedUser3.getId());
+        assertThat(friendIds).contains(savedUser2, savedUser3);
     }
 
     @Test
@@ -714,9 +714,9 @@ class FilmorateApplicationTests {
         userStorage.updateFriendStatus(savedUser2.getId(), savedUser3.getId(), true);
 
         // Then - проверяем друзей user1
-        Set<Long> friendIds = userStorage.getFriendIds(savedUser1.getId());
+        List<User> friendIds = userStorage.getFriendIds(savedUser1.getId());
         assertThat(friendIds).hasSize(2);
-        assertThat(friendIds).contains(savedUser2.getId(), savedUser3.getId());
+        assertThat(friendIds).contains(savedUser2, savedUser3);
 
         // Then - проверяем общих друзей user1 и user2
         Collection<User> commonFriends = userStorage.getCommonFriends(savedUser1.getId(), savedUser2.getId());

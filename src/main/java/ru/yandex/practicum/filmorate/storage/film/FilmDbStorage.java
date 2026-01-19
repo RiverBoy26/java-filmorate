@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -164,21 +165,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private void replaceFilmGenres(long filmId, Set<Genre> genres) {
-        // Удаляем все старые жанры
-        String deleteSql = "DELETE FROM film_genres WHERE film_id = ?";
-        jdbcTemplate.update(deleteSql, filmId);
+        jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", filmId);
 
-        // Если нет новых жанров - выходим
-        if (genres == null || genres.isEmpty()) {
-            return;
-        }
+        if (genres == null || genres.isEmpty()) return;
 
-        // Добавляем новые жанры по одному
-        String insertSql = "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)";
-        for (Genre genre : genres) {
-            if (genre != null && genre.getId() > 0) {
-                jdbcTemplate.update(insertSql, filmId, genre.getId());
-            }
+        List<Object[]> params = genres.stream()
+                .filter(genre -> genre != null && genre.getId() > 0)
+                .map(genre -> new Object[]{filmId, genre.getId()})
+                .collect(Collectors.toList());
+
+        if (!params.isEmpty()) {
+            jdbcTemplate.batchUpdate(
+                    "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
+                    params
+            );
         }
     }
 

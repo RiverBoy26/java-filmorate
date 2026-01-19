@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -72,11 +70,6 @@ public class UserService {
     }
 
     public List<User> getUserFriends(long userId) {
-        Set<Long> friendIds = userStorage.getFriendIds(userId);
-
-        return friendIds.stream()
-                .map(id -> userStorage.getUser(id)
-                        .orElseThrow(() -> new NotFoundException("Пользователь не найден")))
-                .collect(Collectors.toList());
+        return userStorage.getFriendIds(userId);
     }
 }
